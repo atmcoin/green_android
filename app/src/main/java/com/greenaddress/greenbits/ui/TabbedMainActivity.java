@@ -89,19 +89,26 @@ public class TabbedMainActivity extends LoggedActivity implements Observer,
             onBitcoinUri();
         }
 
-        if (AtmDeposit.getInstance().getAddress() != null) {
-            startActivity(new Intent(this, ScanActivity.class));
-            Log.i("tabbed", "deposit found");
-        } else {
-            Log.i("tabbed", "deposit not found");
-        }
-
         // check available preferred exchange rate
         try {
             final BalanceData balanceData = getSession().convertBalance(0);
             Double.parseDouble(balanceData.getFiat());
         } catch (final Exception e) {
             UI.popup(this, R.string.id_your_favourite_exchange_rate_is).show();
+        }
+
+        if (AtmDeposit.getInstance().getAddress() != null) {
+            final MaterialDialog dialog;
+            MaterialDialog.Builder builder = UI.popup(this, "Atm deposit")
+                    .positiveText("Deposit")
+                    .content("A pending deposit has been detected, do you want to proceed?")
+                    .backgroundColor(getResources().getColor(R.color.buttonJungleGreen))
+                    .onPositive((dlg, which) -> {
+                        startActivity(new Intent(this, ScanActivity.class));
+                    });
+
+            dialog = builder.build();
+            dialog.show();
         }
     }
 

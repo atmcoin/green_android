@@ -146,6 +146,7 @@ public class ScanActivity extends LoggedActivity implements TextureView.SurfaceT
             } catch (Exception e) {
                 Log.e("atm", Log.getStackTraceString(e));
             }
+            finishOnUiThread();
         }
     }
 
