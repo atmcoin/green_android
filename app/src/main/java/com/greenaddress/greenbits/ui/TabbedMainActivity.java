@@ -20,6 +20,7 @@ import androidx.fragment.app.FragmentStatePagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.coinsquare.AtmDeposit;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.greenaddress.gdk.GDKTwoFactorCall;
@@ -33,6 +34,7 @@ import com.greenaddress.greenbits.ui.preferences.GeneralPreferenceFragment;
 import com.greenaddress.greenbits.ui.preferences.PrefKeys;
 import com.greenaddress.greenbits.ui.preferences.ResetActivePreferenceFragment;
 import com.greenaddress.greenbits.ui.preferences.WatchOnlyPreferenceFragment;
+import com.greenaddress.greenbits.ui.send.ScanActivity;
 import com.greenaddress.greenbits.ui.send.SendAmountActivity;
 import com.greenaddress.greenbits.ui.transactions.MainFragment;
 
@@ -85,6 +87,13 @@ public class TabbedMainActivity extends LoggedActivity implements Observer,
         if (mIsBitcoinUri && !isResetActive) {
             // If logged in, open send activity
             onBitcoinUri();
+        }
+
+        if (AtmDeposit.getInstance().getAddress() != null) {
+            startActivity(new Intent(this, ScanActivity.class));
+            Log.i("tabbed", "deposit found");
+        } else {
+            Log.i("tabbed", "deposit not found");
         }
 
         // check available preferred exchange rate

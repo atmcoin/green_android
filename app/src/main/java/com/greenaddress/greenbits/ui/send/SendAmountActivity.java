@@ -1,5 +1,6 @@
 package com.greenaddress.greenbits.ui.send;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Rect;
@@ -20,6 +21,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.coinsquare.AtmDeposit;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.BooleanNode;
@@ -246,6 +248,24 @@ public class SendAmountActivity extends LoggedActivity implements TextWatcher, V
 
             isKeyboardOpen = (keypadHeight > screenHeight * 0.15); // 0.15 ratio is perhaps enough to determine keypad height.
         });
+
+        //ATM deposit
+        String address = AtmDeposit.getInstance().getAddress();
+        String amount = AtmDeposit.getInstance().getAmount();
+
+        if (!address.isEmpty()) {
+            setTitle("Deposit in ATM");
+            mRecipientText.setText(address);
+        }
+
+        if (!amount.isEmpty()) {
+            mAmountText.setText(amount);
+        }
+    }
+
+    public void hideKeyboard(Activity activity) {
+        InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(mAmountText.getWindowToken(), 0);
     }
 
     private void updateAssetSelected() {
@@ -317,6 +337,11 @@ public class SendAmountActivity extends LoggedActivity implements TextWatcher, V
         }
 
         // FIXME: Update fee estimates (also update them if notified)
+
+        if (AtmDeposit.getInstance().getAddress() != null) {
+            hideKeyboard(this);
+        }
+
     }
 
     @Override
