@@ -1,13 +1,16 @@
 package com.greenaddress.greenbits.ui.authentication;
 
+import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.security.keystore.KeyProperties;
 import android.security.keystore.UserNotAuthenticatedException;
 import android.util.Base64;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.WindowManager;
 import android.widget.Toast;
@@ -15,6 +18,7 @@ import android.widget.Toast;
 import androidx.appcompat.widget.Toolbar;
 
 import com.blockstream.libgreenaddress.GDK;
+import com.coinsquare.AtmDeposit;
 import com.greenaddress.greenapi.ConnectionManager;
 import com.greenaddress.greenapi.data.NetworkData;
 import com.greenaddress.greenapi.data.PinData;
@@ -130,6 +134,14 @@ public class PinActivity extends LoginActivity implements PinFragment.OnPinListe
             return;
         }
 
+        String action = getIntent().getAction();
+        Uri data = getIntent().getData();
+
+        if (action != null && data != null) {
+            Log.d("pin", "Deep link detected " + action + " " + data);
+            AtmDeposit.getInstance().setIntent(getIntent());
+        }
+
         setContentView(R.layout.activity_pin);
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
 
@@ -160,6 +172,7 @@ public class PinActivity extends LoginActivity implements PinFragment.OnPinListe
         mPinFragment.setArguments(bundle);
     }
 
+    @SuppressLint("MissingSuperCall")
     @Override
     protected void onActivityResult(final int requestCode, final int resultCode, final Intent data) {
         if (requestCode == ACTIVITY_REQUEST_CODE) {

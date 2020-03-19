@@ -20,6 +20,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.coinsquare.AtmDeposit;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.BooleanNode;
@@ -35,7 +36,6 @@ import com.greenaddress.greenbits.ui.UI;
 import com.greenaddress.greenbits.ui.assets.AssetsAdapter;
 import com.greenaddress.greenbits.ui.preferences.PrefKeys;
 
-import java.io.IOException;
 import java.text.ParseException;
 import java.util.HashMap;
 import java.util.List;
@@ -70,6 +70,7 @@ public class SendAmountActivity extends LoggedActivity implements TextWatcher, V
     private String mSelectedAsset = "btc";
     private Long mAssetBalances;
     private boolean isSweep;
+    private boolean isHideOnlyFirstTime = true;
 
     private static final int[] mButtonIds =
     {R.id.fastButton, R.id.mediumButton, R.id.slowButton, R.id.customButton};
@@ -231,7 +232,7 @@ public class SendAmountActivity extends LoggedActivity implements TextWatcher, V
         }
 
         final View contentView = findViewById(android.R.id.content);
-        UI.attachHideKeyboardListener(this, contentView);
+//        UI.attachHideKeyboardListener(this, contentView);
 
         contentView.getViewTreeObserver().addOnGlobalLayoutListener(() -> {
             Rect r = new Rect();
@@ -246,6 +247,34 @@ public class SendAmountActivity extends LoggedActivity implements TextWatcher, V
 
             isKeyboardOpen = (keypadHeight > screenHeight * 0.15); // 0.15 ratio is perhaps enough to determine keypad height.
         });
+
+        //ATM deposit
+        String address = AtmDeposit.getInstance().getAddress();
+        String amount = AtmDeposit.getInstance().getAmount();
+
+        if (!address.isEmpty()) {
+            setTitle("Deposit in ATM");
+            mRecipientText.setText(address);
+        }
+
+        if (!amount.isEmpty()) {
+            mAmountText.setText(amount);
+            //keyboard is not getting dismissed without the postDelayed call
+            mAmountText.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    hideKeyboard();
+                }
+            }, 100);
+        }
+    }
+
+    public void hideKeyboard() {
+        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        if (imm != null) {
+            Log.i("atm", "2 hiding the keyboard");
+            imm.hideSoftInputFromWindow(mAmountText.getWindowToken(), 0);
+        }
     }
 
     private void updateAssetSelected() {

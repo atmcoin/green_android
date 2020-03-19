@@ -20,6 +20,7 @@ import androidx.fragment.app.FragmentStatePagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.coinsquare.AtmDeposit;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.greenaddress.gdk.GDKTwoFactorCall;
@@ -33,6 +34,7 @@ import com.greenaddress.greenbits.ui.preferences.GeneralPreferenceFragment;
 import com.greenaddress.greenbits.ui.preferences.PrefKeys;
 import com.greenaddress.greenbits.ui.preferences.ResetActivePreferenceFragment;
 import com.greenaddress.greenbits.ui.preferences.WatchOnlyPreferenceFragment;
+import com.greenaddress.greenbits.ui.send.ScanActivity;
 import com.greenaddress.greenbits.ui.send.SendAmountActivity;
 import com.greenaddress.greenbits.ui.transactions.MainFragment;
 
@@ -93,6 +95,20 @@ public class TabbedMainActivity extends LoggedActivity implements Observer,
             Double.parseDouble(balanceData.getFiat());
         } catch (final Exception e) {
             UI.popup(this, R.string.id_your_favourite_exchange_rate_is).show();
+        }
+
+        if (AtmDeposit.getInstance().getAddress() != null) {
+            final MaterialDialog dialog;
+            MaterialDialog.Builder builder = UI.popup(this, "Atm deposit")
+                    .positiveText("Deposit")
+                    .content("A pending deposit has been detected, do you want to proceed?")
+                    .backgroundColor(getResources().getColor(R.color.buttonJungleGreen))
+                    .onPositive((dlg, which) -> {
+                        startActivity(new Intent(this, ScanActivity.class));
+                    });
+
+            dialog = builder.build();
+            dialog.show();
         }
     }
 

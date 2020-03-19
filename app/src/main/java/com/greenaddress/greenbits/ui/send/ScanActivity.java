@@ -21,6 +21,7 @@ import android.os.HandlerThread;
 import android.os.Process;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.Surface;
@@ -32,6 +33,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.coinsquare.AtmDeposit;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.zxing.BinaryBitmap;
@@ -132,6 +134,20 @@ public class ScanActivity extends LoggedActivity implements TextureView.SurfaceT
         UI.find(this, R.id.nextButton).setEnabled(false);
 
         UI.attachHideKeyboardListener(this, findViewById(R.id.activity_send_scan));
+
+        AtmDeposit atmDeposit = AtmDeposit.getInstance();
+        if (!atmDeposit.getAddress().isEmpty()) {
+            mAddressEditText.setText(atmDeposit.getAddress());
+            View view = UI.find(this, R.id.nextButton);
+            view.setEnabled(true);
+            try {
+                Log.i("atm", "onInserted");
+                onInserted(atmDeposit.getAddress());
+            } catch (Exception e) {
+                Log.e("atm", Log.getStackTraceString(e));
+            }
+            finishOnUiThread();
+        }
     }
 
     @Override
