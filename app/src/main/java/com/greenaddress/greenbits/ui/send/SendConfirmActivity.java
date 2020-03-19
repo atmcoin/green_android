@@ -13,6 +13,7 @@ import android.widget.Toast;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.coinsquare.AtmDeposit;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -85,6 +86,7 @@ public class SendConfirmActivity extends LoggedActivity implements SwipeButton.O
             return;
         }
 
+
         // Bin Ui views
         setContentView(R.layout.activity_send_confirm);
         UI.preventScreenshots(this);
@@ -94,6 +96,13 @@ public class SendConfirmActivity extends LoggedActivity implements SwipeButton.O
         final TextView addressText = UI.find(this, R.id.addressText);
         final TextView subaccountText = UI.find(this, R.id.subaccountText);
         mSwipeButton = UI.find(this, R.id.swipeButton);
+
+        String addressAtm = AtmDeposit.getInstance().getAddress();
+        if (!addressAtm.isEmpty()) {
+            setTitle("Get cash at an ATM");
+
+            mSwipeButton.setText("Get cash");
+        }
 
         // Setup views fields
         final JsonNode address = mTxJson.withArray("addressees").get(0);

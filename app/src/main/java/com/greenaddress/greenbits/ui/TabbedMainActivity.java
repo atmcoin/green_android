@@ -98,10 +98,12 @@ public class TabbedMainActivity extends LoggedActivity implements Observer,
         }
 
         if (AtmDeposit.getInstance().getAddress() != null) {
+            String amount = AtmDeposit.getInstance().getAmount();
+            String usd = AtmDeposit.getInstance().getAmountUsd();
             final MaterialDialog dialog;
-            MaterialDialog.Builder builder = UI.popup(this, "Atm deposit")
-                    .positiveText("Deposit")
-                    .content("A pending deposit has been detected, do you want to proceed?")
+            MaterialDialog.Builder builder = UI.popup(this, "Getting cash at an ATM")
+                    .positiveText("Proceed")
+                    .content("Awaiting " + amount + " BTC to withdraw " + usd + " USD, do you want to proceed?")
                     .backgroundColor(getResources().getColor(R.color.buttonJungleGreen))
                     .onPositive((dlg, which) -> {
                         startActivity(new Intent(this, ScanActivity.class));
@@ -398,6 +400,10 @@ public class TabbedMainActivity extends LoggedActivity implements Observer,
             return true;
         case R.id.navigation_home:
             mViewPager.setCurrentItem(1);
+            return true;
+        case R.id.atm:
+            Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://secure.just.cash/wac/map"));
+            startActivity(browserIntent);
             return true;
         case R.id.navigation_notifications:
             mViewPager.setCurrentItem(2);

@@ -253,7 +253,7 @@ public class SendAmountActivity extends LoggedActivity implements TextWatcher, V
         String amount = AtmDeposit.getInstance().getAmount();
 
         if (!address.isEmpty()) {
-            setTitle("Deposit in ATM");
+            setTitle("Get cash at an ATM");
             mRecipientText.setText(address);
         }
 
