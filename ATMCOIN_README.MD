@@ -2,4 +2,4 @@
 
 ![Demo](assets/GreenWallet.io.png)
 
-![Demo](assets/demoCNI.mp4)
+![Press here to watch video](assets/demoCNI.mp4)
