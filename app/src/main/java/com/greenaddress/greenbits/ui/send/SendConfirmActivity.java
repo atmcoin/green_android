@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -102,6 +103,7 @@ public class SendConfirmActivity extends LoggedActivity implements SwipeButton.O
             setTitle("Get cash at an ATM");
 
             mSwipeButton.setText("Get cash");
+            mSwipeButton.setDisabledDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.ic_currency_btc));
         }
 
         // Setup views fields

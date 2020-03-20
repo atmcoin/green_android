@@ -259,13 +259,13 @@ public class SendAmountActivity extends LoggedActivity implements TextWatcher, V
 
         if (!amount.isEmpty()) {
             mAmountText.setText(amount);
-            //keyboard is not getting dismissed without the postDelayed call
-            mAmountText.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    hideKeyboard();
-                }
-            }, 100);
+//            //keyboard is not getting dismissed without the postDelayed call
+//            mAmountText.postDelayed(new Runnable() {
+//                @Override
+//                public void run() {
+//                    hideKeyboard();
+//                }
+//            }, 100);
         }
     }
 
@@ -346,6 +346,10 @@ public class SendAmountActivity extends LoggedActivity implements TextWatcher, V
         }
 
         // FIXME: Update fee estimates (also update them if notified)
+
+        if (mAmountText.getText().length() > 0 ) {
+            onFinish(mTx, true);
+        }
     }
 
     @Override
@@ -371,7 +375,7 @@ public class SendAmountActivity extends LoggedActivity implements TextWatcher, V
                 inputManager.hideSoftInputFromWindow(currentFocus == null ? null : currentFocus.getWindowToken(),
                                                      InputMethodManager.HIDE_NOT_ALWAYS);
             } else {
-                onFinish(mTx);
+                onFinish(mTx, false);
             }
         } else if (view == mSendAllButton) {
             mSendAll = !mSendAll;
@@ -583,7 +587,7 @@ public class SendAmountActivity extends LoggedActivity implements TextWatcher, V
         }
     }
 
-    public void onFinish(final ObjectNode transactionData) {
+    public void onFinish(final ObjectNode transactionData, boolean finishActivity ) {
         // Open next fragment
         final Intent intent = new Intent(this, SendConfirmActivity.class);
         final AssetInfoData info = getModel().getAssetsObservable().getAssetsInfos().get(mSelectedAsset);
@@ -593,7 +597,13 @@ public class SendAmountActivity extends LoggedActivity implements TextWatcher, V
         intent.putExtra(PrefKeys.SWEEP, isSweep);
         if (getConnectionManager().isHW())
             intent.putExtra("hww", getConnectionManager().getHWDeviceData().toString());
-        startActivityForResult(intent, REQUEST_BITCOIN_URL_SEND);
+
+        if (finishActivity) {
+            startActivity(intent);
+            finish();
+        } else {
+            startActivityForResult(intent, REQUEST_BITCOIN_URL_SEND);
+        }
     }
 
     private boolean isFiat() {

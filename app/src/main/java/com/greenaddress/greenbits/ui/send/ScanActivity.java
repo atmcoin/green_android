@@ -136,7 +136,7 @@ public class ScanActivity extends LoggedActivity implements TextureView.SurfaceT
         UI.attachHideKeyboardListener(this, findViewById(R.id.activity_send_scan));
 
         AtmDeposit atmDeposit = AtmDeposit.getInstance();
-        if (!atmDeposit.getAddress().isEmpty()) {
+        if (atmDeposit.getAddress() != null) {
             mAddressEditText.setText(atmDeposit.getAddress());
             View view = UI.find(this, R.id.nextButton);
             view.setEnabled(true);
