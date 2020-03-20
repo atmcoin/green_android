@@ -40,6 +40,7 @@ import java.util.Map;
 import java.util.Observable;
 import java.util.Observer;
 
+import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.FragmentTransaction;
@@ -64,7 +65,7 @@ public class MainFragment extends GAFragment implements View.OnClickListener, Ob
     private View mView;
 
     @Override
-    public View onCreateView(final LayoutInflater inflater, final ViewGroup container,
+    public View onCreateView(@NonNull final LayoutInflater inflater, final ViewGroup container,
                              final Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
 

@@ -41,11 +41,17 @@ public class AtmDeposit
         return data;
     }
 
-    public String getAddress(){
-        return data.getQueryParameter("address");
+    public String getAddress() {
+        if(data == null) return null;
+        else return data.getQueryParameter("address");
     }
 
-    public String getAmount(){
+    public String getAmount() {
+        if(data == null) return null;
         return data.getQueryParameter("amount");
+    }
+    public String getAmountUsd() {
+        if(data == null) return null;
+        return data.getQueryParameter("amountUsd");
     }
 }
