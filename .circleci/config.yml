@@ -1,0 +1,118 @@
+# Java Gradle CircleCI 2.0 configuration file
+#
+# Check https://circleci.com/docs/2.0/language-java/ for more details
+#
+version: 2.1
+jobs:
+  build:
+    machine: 
+      enabled: true
+      docker_layer_caching: true
+
+      # specify the version you desire here
+
+      
+      # Specify service dependencies here if necessary
+      # CircleCI maintains a library of pre-built images
+      # documented at https://circleci.com/docs/2.0/circleci-images/
+      # - image: circleci/postgres:9.4
+
+    working_directory: ~/repo
+
+    environment:
+      # Customize the JVM maximum heap limit
+      SDK_FILENAME: sdk-tools-darwin-4333796.zip
+      ANDROID_HOME: ~/opt
+      WORKINGING_HOME: ~/repo
+    
+    steps:
+      - checkout
+
+      - attach_workspace:
+          # Must be absolute path or relative path from working_directory
+          at: /tmp/workspace
+          
+      #Check persist workspace
+      - run:
+          name: check persist workspace
+          command: |
+            ls -la /tmp/workspace
+      #Check atmsql checkout
+      - run:
+          name: Download SDK
+          command: |
+            mkdir -p $HOME/opt
+            curl -sSO https://dl.google.com/android/repository/$SDK_FILENAME
+            unzip -qq $SDK_FILENAME -d $ANDROID_HOME &> /dev/null
+            
+      #Check SDK
+      - run:
+          name: check SDK
+          command: |
+            ls -la $ANDROID_HOME
+      #Check Repo
+      - run:
+          name: Check uncrustify
+          command: |
+              ./tools/uncrustify 
+              git diff 
+              git diff --quiet 
+              
+  
+      #Refresh gradle
+      - run:
+           name: Refresh gradle
+           command: |
+             ./gradlew   dependencies
+             ./gradlew --project-dir=bitcoinj/tools dependencies
+               
+      #gradle build
+      - run:
+           name: gradle build
+           command: |
+             ./gradlew --project-dir=bitcoinj/tools build 
+       #gradle build
+      - run:
+           name: gradle lintProductionRelease
+           command: |
+             ./gradlew lintProductionRelease
+      #gradle build
+      - run:
+           name: gradle assembleProductionRelease
+           command: |
+             ./gradlew assembleProductionRelease
+             
+
+
+
+
+
+    # save cache
+      - save_cache:
+          paths:
+          - ~/.gradle
+          - ~/opt
+          key: v1-dependencies-{{ checksum "build.gradle" }}-{{ checksum "./circleci/config.yml" }}
+          when: always
+
+
+       # save tests!
+      - run:
+          name: Save test results 
+          command: |
+            mkdir -p ~/atrifact
+            cp -r $WORKINGING_HOME/app/build/reports ~/atrifact;
+            cp -r $WORKINGING_HOME/app/build/outputs/apk/production/release ~/atrifact;
+          when: always
+      - store_test_results:
+          path: $WORKINGING_HOME/app/build/reports
+      - store_artifacts:
+          path: ~/atrifact
+
+
+
+workflows:
+  version: 2
+  commit:
+    jobs:
+      - build
