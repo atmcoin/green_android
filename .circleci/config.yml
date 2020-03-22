@@ -41,7 +41,7 @@ jobs:
       - run:
           name: Download SDK
           command: |
-            mkdir -p $HOME/opt
+            mkdir -p $ANDROID_HOME
             curl -sSO https://dl.google.com/android/repository/$SDK_FILENAME
             unzip -qq $SDK_FILENAME -d $ANDROID_HOME &> /dev/null
             
@@ -92,7 +92,7 @@ jobs:
           paths:
           - ~/.gradle
           - ~/opt
-          key: v1-dependencies-{{ checksum "build.gradle" }}-{{ checksum "./circleci/config.yml" }}
+          key: v1-dependencies-{{ checksum "build.gradle" }}-{{ checksum ".circleci/config.yml" }}
           when: always
 
 
