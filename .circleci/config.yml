@@ -37,6 +37,8 @@ jobs:
           name: check persist workspace
           command: |
             ls -la /tmp/workspace
+            echo $PWD
+            ls ~/repo
       #Download SDK
       - run:
           name: Download SDK
@@ -56,7 +58,7 @@ jobs:
       - run:
           name: Download SDK
           command: |
-            echo "y" | $ANDROID_HOME/tools/bin/sdkmanager "tools" "platform-tools" 
+            echo "N" | $ANDROID_HOME/tools/bin/sdkmanager "tools" "platform-tools" 
 
       #Check Repo
       - run:
