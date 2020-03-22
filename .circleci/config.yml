@@ -38,8 +38,7 @@ jobs:
           command: |
             ls -la /tmp/workspace
             echo $PWD
-            ls -la $WORKINGING_HOME
-            ls -la $WORKINGING_HOME/app
+            ls -la .
       # Download and cache dependencies gradle
       - restore_cache:
           keys:
@@ -120,12 +119,12 @@ jobs:
           name: Save test results 
           command: |
             mkdir -p ~/atrifact
-            ls -l $WORKINGING_HOME/app/build
-            cp -r $WORKINGING_HOME/app/build/reports ~/atrifact;
-            cp -r $WORKINGING_HOME/app/build/outputs/apk/production/release ~/atrifact;
+            ls -l ./app/build
+            cp -r ./app/build/reports ~/atrifact;
+            cp -r ./app/build/outputs/apk/production/release ~/atrifact;
           when: always
       - store_test_results:
-          path: $WORKINGING_HOME/app/build/reports
+          path: ./app/build/reports
       - store_artifacts:
           path: ~/atrifact
 
