@@ -21,7 +21,7 @@ jobs:
 
     environment:
       # Customize the JVM maximum heap limit
-      SDK_FILENAME: sdk-tools-darwin-4333796.zip
+      SDK_FILENAME: sdk-tools-linux-4333796.zip
       ANDROID_HOME: ~/opt
       WORKINGING_HOME: ~/repo
     
@@ -43,13 +43,14 @@ jobs:
           command: |
             mkdir -p $ANDROID_HOME
             curl -sSO https://dl.google.com/android/repository/$SDK_FILENAME
-            unzip -qq $SDK_FILENAME -d $ANDROID_HOME &> /dev/null
+            unzip -qq $SDK_FILENAME -d $ANDROID_HOME 
             
       #Check SDK
       - run:
           name: check SDK
           command: |
             ls -la $ANDROID_HOME
+            ls -la $ANDROID_HOME/tools
       #Check Repo
       - run:
           name: Check uncrustify
