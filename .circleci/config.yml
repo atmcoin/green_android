@@ -44,10 +44,15 @@ jobs:
           name: Download SDK
           command: |
             mkdir -p $ANDROID_HOME
-            curl -sSO https://dl.google.com/android/repository/$SDK_FILENAME
-            unzip -qq $SDK_FILENAME -d $ANDROID_HOME 
-
-            
+            if [ ! -f "~/.android/$SDK_FILENAME" ]; then
+                curl -sSO https://dl.google.com/android/repository/$SDK_FILENAME
+                mkdir -p ~/.android
+                cp $SDK_FILENAME ~/.android/$SDK_FILENAME
+                
+            else
+             echo "SDK Already present"
+            fi   
+            unzip -qq ~/.android/$SDK_FILENAME -d $ANDROID_HOME 
       #Check SDK
       - run:
           name: check SDK
@@ -103,8 +108,9 @@ jobs:
           paths:
           - ~/.gradle
           - ~/opt
+          - ~/.android
           key: v1-dependencies-{{ checksum "build.gradle" }}-{{ checksum ".circleci/config.yml" }}
-          when: always
+
 
 
        # save tests!
@@ -112,6 +118,7 @@ jobs:
           name: Save test results 
           command: |
             mkdir -p ~/atrifact
+            ls -l $WORKINGING_HOME/app/build
             cp -r $WORKINGING_HOME/app/build/reports ~/atrifact;
             cp -r $WORKINGING_HOME/app/build/outputs/apk/production/release ~/atrifact;
           when: always
