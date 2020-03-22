@@ -56,7 +56,7 @@ jobs:
       - run:
           name: Download SDK
           command: |
-            eho "y" | $ANDROID_HOME/tools/bin/sdkmanager "tools" "platform-tools" 
+            echo "y" | $ANDROID_HOME/tools/bin/sdkmanager "tools" "platform-tools" 
 
       #Check Repo
       - run:
