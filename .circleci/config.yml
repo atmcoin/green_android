@@ -5,17 +5,8 @@
 version: 2.1
 jobs:
   build:
-    machine: 
-      enabled: true
-      docker_layer_caching: true
-
-      # specify the version you desire here
-
-      
-      # Specify service dependencies here if necessary
-      # CircleCI maintains a library of pre-built images
-      # documented at https://circleci.com/docs/2.0/circleci-images/
-      # - image: circleci/postgres:9.4
+    docker:
+      - image: circleci/openjdk:9.0-jdk
 
     working_directory: ~/repo
 
@@ -23,27 +14,23 @@ jobs:
       # Customize the JVM maximum heap limit
       SDK_FILENAME: sdk-tools-linux-4333796.zip
       ANDROID_HOME: ~/opt
-      WORKINGING_HOME: ~/repo
+
     
     steps:
       - checkout
-
-      - attach_workspace:
-          # Must be absolute path or relative path from working_directory
-          at: /tmp/workspace
           
       #Check persist workspace
       - run:
-          name: check persist workspace
+          name: check init
           command: |
             ls -la /tmp/workspace
             echo $PWD
             ls -la .
+            
       # Download and cache dependencies gradle
       - restore_cache:
           keys:
           - v1-dependencies-{{ checksum "build.gradle" }}-{{ checksum ".circleci/config.yml" }}
-
             
       #Download SDK
       - run:
@@ -59,12 +46,14 @@ jobs:
              echo "SDK Already present"
             fi   
             unzip -qq ~/.android/$SDK_FILENAME -d $ANDROID_HOME 
+            
       #Check SDK
       - run:
           name: check SDK
           command: |
             ls -la $ANDROID_HOME
             ls -la $ANDROID_HOME/tools
+            
       #accept SDK
       - run:
           name: Accept SDK
@@ -72,6 +61,7 @@ jobs:
             echo "y" | $ANDROID_HOME/tools/bin/sdkmanager "tools" "platform-tools" 
             echo "y" | $ANDROID_HOME/tools/bin/sdkmanager "build-tools;29.0.2" 
             echo "y" | $ANDROID_HOME/tools/bin/sdkmanager "platforms;android-29" 
+            
       #Check Repo
       - run:
           name: Check uncrustify
@@ -80,7 +70,6 @@ jobs:
               git diff 
               git diff --quiet 
               
-  
       #Refresh gradle
       - run:
            name: Refresh gradle
