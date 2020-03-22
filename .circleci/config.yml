@@ -19,11 +19,10 @@ jobs:
     steps:
       - checkout
           
-      #Check persist workspace
+      #Check init
       - run:
           name: check init
           command: |
-            ls -la /tmp/workspace
             echo $PWD
             ls -la .
             
